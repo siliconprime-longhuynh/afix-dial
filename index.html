@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY Calling App (Fixed)</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.11.1/dist/twilio.min.js"></script>
+</head>
+<body>
+<h2>VoIP Demo (Client-to-Client) - SDK v2</h2>
+
+<div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
+    <label>Your Name (Identity): </label>
+    <input type="text" id="identity" placeholder="e.g.: alice">
+    <button onclick="startup()">1. Login (Online)</button>
+</div>
+
+<div>
+    <label>Phone Number: </label>
+    <input type="text" id="phoneNumber" placeholder="+1..." value="+18663460541">
+    <button onclick="makeCall()">2. Call</button>
+    <button onclick="hangup()" style="background:red; color:white">3. Hang up</button>
+</div>
+
+<div id="status" class="status">Status: Not connected</div>
+
+<!-- SMS Display Area -->
+<div class="sms-container">
+    <h3>SMS Message History</h3>
+    <div id="sms-list">
+        <!-- Messages will be added here -->
+        <div style="color: #888; font-style: italic;">No messages yet...</div>
+    </div>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

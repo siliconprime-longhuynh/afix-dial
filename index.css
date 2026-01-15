@@ -1,0 +1,44 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+input {
+    padding: 10px;
+}
+
+.status {
+    margin-top: 20px;
+    font-weight: bold;
+    color: blue;
+}
+
+.sms-container {
+    margin-top: 30px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+}
+
+.sms-item {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.sms-sender {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.sms-body {
+    font-size: 1.1em;
+}
