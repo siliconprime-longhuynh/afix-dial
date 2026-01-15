@@ -10,8 +10,14 @@
 <h2>VoIP Demo (Client-to-Client) - SDK v2</h2>
 
 <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
-    <label>Your Name (Identity): </label>
-    <input type="text" id="identity" placeholder="e.g.: alice">
+    <div style="margin-bottom: 10px;">
+        <label>Your Name (Identity): </label>
+        <input type="text" id="identity" placeholder="e.g.: alice">
+    </div>
+    <div style="margin-bottom: 10px;">
+        <label>Twilio Token: </label>
+        <textarea id="token" placeholder="Paste your Twilio token here..." rows="3" style="width: 100%; margin-top: 5px;"></textarea>
+    </div>
     <button onclick="startup()">1. Login (Online)</button>
 </div>
 

@@ -3,24 +3,23 @@ let device;
 // 1. Startup & Login function
 async function startup() {
   const identity = document.getElementById('identity').value;
+  const token = document.getElementById('token').value;
+
   if (!identity) {
     log("Please enter a name!", true);
     return;
   }
 
-  log(`Fetching token for ${identity}...`);
+  if (!token) {
+    log("Please paste a token!", true);
+    return;
+  }
+
+  log(`Initializing device for ${identity}...`);
 
   try {
-    // Call Python server to get Token
-    const response = await fetch('https://dev-api.afix.app/api/v1/twilio/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ identity: identity })
-    });
-    const data = await response.json();
-
     // --- INITIALIZE SDK V2 ---
-    device = new Twilio.Device(data.token, {
+    device = new Twilio.Device(token.trim(), {
       codecPreferences: ['opus', 'pcmu'],
       // fix audio warning
       warnings: false
@@ -30,7 +29,7 @@ async function startup() {
     device.on('registered', () => {
       log(`${identity} logged in successfully! Ready to receive calls.`);
       // Start polling messages after successful login
-      startSmsPolling();
+      // startSmsPolling(); // Commented out as it might still cause CORS/404 if not set up
     });
 
     // Listen for errors
