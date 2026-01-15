@@ -1,10 +1,14 @@
 {
   "name": "afix-dials",
   "version": "1.0.0",
-  "description": "",
+  "description": "Twilio VoIP and SMS Demo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx serve .",
+    "deploy": "gh-pages -d ."
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   },
   "private": true
 }
