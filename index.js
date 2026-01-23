@@ -3,16 +3,48 @@ let device;
 // 1. Startup & Login function
 async function startup() {
   const identity = document.getElementById('identity').value;
-  const token = document.getElementById('token').value;
+  let token = document.getElementById('token').value;
 
   if (!identity) {
     log("Please enter a name!", true);
     return;
   }
 
+  // If token is empty, try to fetch it from our Netlify function
   if (!token) {
-    log("Please paste a token!", true);
-    return;
+    log(`Fetching token for ${identity}...`);
+    try {
+      const response = await fetch('/.netlify/functions/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ identity }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch token: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      // Adjust based on the actual response structure of your API
+      token = data.token || data.accessToken || data; 
+      
+      if (typeof token !== 'string') {
+        // If it's an object, we might need to find the token field
+        token = data.token || data.accessToken;
+      }
+
+      if (!token) {
+        throw new Error("Token not found in response");
+      }
+      
+      document.getElementById('token').value = token;
+      log("Token fetched successfully!");
+    } catch (err) {
+      log("Error fetching token: " + err.message, true);
+      return;
+    }
   }
 
   log(`Initializing device for ${identity}...`);
