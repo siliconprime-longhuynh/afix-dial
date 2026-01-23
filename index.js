@@ -3,65 +3,57 @@ let device;
 // 1. Startup & Login function
 async function startup() {
   const identity = document.getElementById('identity').value;
-  let token = document.getElementById('token').value;
 
   if (!identity) {
-    log("Please enter a name!", true);
+    log("Please enter an identity (e.g. phone number)!", true);
     return;
   }
 
-  // If token is empty, try to fetch it from our Netlify function
-  if (!token) {
-    log(`Fetching token for ${identity}...`);
-    try {
-      const response = await fetch('/.netlify/functions/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ identity }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch token: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      // Adjust based on the actual response structure of your API
-      token = data.token || data.accessToken || data; 
-      
-      if (typeof token !== 'string') {
-        // If it's an object, we might need to find the token field
-        token = data.token || data.accessToken;
-      }
-
-      if (!token) {
-        throw new Error("Token not found in response");
-      }
-      
-      document.getElementById('token').value = token;
-      log("Token fetched successfully!");
-    } catch (err) {
-      log("Error fetching token: " + err.message, true);
-      return;
+  log(`Fetching token for ${identity}...`);
+  
+  let token;
+  try {
+    const response = await fetch('/.netlify/functions/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ identity }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch token: ${response.statusText}`);
     }
-  }
+    
+    const data = await response.json();
+    // The API returns { token: "..." } or similar
+    token = data.token || data.accessToken || (typeof data === 'string' ? data : null);
+    
+    if (!token && typeof data === 'object') {
+      // Fallback if the token is nested or the whole object is the token
+      token = data.token || data.accessToken;
+    }
 
-  log(`Initializing device for ${identity}...`);
+    if (!token) {
+      throw new Error("Token not found in response");
+    }
+    
+    log("Token fetched successfully! Initializing device...");
+  } catch (err) {
+    log("Error fetching token: " + err.message, true);
+    return;
+  }
 
   try {
     // --- INITIALIZE SDK V2 ---
     device = new Twilio.Device(token.trim(), {
       codecPreferences: ['opus', 'pcmu'],
-      // fix audio warning
       warnings: false
     });
 
     // Listen for successful registration
     device.on('registered', () => {
       log(`${identity} logged in successfully! Ready to receive calls.`);
-      // Start polling messages after successful login
-      // startSmsPolling(); // Commented out as it might still cause CORS/404 if not set up
     });
 
     // Listen for errors
@@ -136,9 +128,8 @@ function log(msg, isError = false) {
 let lastMessageCount = 0;
 
 function startSmsPolling() {
-  // Polling every 5 seconds to get new messages
   setInterval(fetchMessages, 5000);
-  fetchMessages(); // Initial call
+  fetchMessages();
 }
 
 async function fetchMessages() {
@@ -146,7 +137,6 @@ async function fetchMessages() {
     const res = await fetch('/get_messages');
     const messages = await res.json();
 
-    // Only update UI if there are new messages
     if (messages.length > lastMessageCount) {
       renderMessages(messages);
       lastMessageCount = messages.length;
@@ -165,7 +155,6 @@ function renderMessages(messages) {
   }
 
   let html = '';
-  // Display newest messages first
   [...messages].reverse().forEach(msg => {
     const isOutbound = msg.direction === 'outbound';
     const cssClass = isOutbound ? 'sms-outbound' : 'sms-inbound';

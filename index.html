@@ -11,18 +11,14 @@
 
 <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
     <div style="margin-bottom: 10px;">
-        <label>Your Name (Identity): </label>
-        <input type="text" id="identity" placeholder="e.g.: alice">
+        <label>Your Identity (Phone Number): </label>
+        <input type="text" id="identity" placeholder="+1..." value="+18777804236">
     </div>
-    <div style="margin-bottom: 10px;">
-        <label>Twilio Token: </label>
-        <textarea id="token" placeholder="Paste your Twilio token here..." rows="3" style="width: 100%; margin-top: 5px;"></textarea>
-    </div>
-    <button onclick="startup()">1. Login (Online)</button>
+    <button onclick="startup()">1. Login (Fetch Token & Connect)</button>
 </div>
 
 <div>
-    <label>Phone Number: </label>
+    <label>Phone Number to Call: </label>
     <input type="text" id="phoneNumber" placeholder="+1..." value="+18663460541">
     <button onclick="makeCall()">2. Call</button>
     <button onclick="hangup()" style="background:red; color:white">3. Hang up</button>
